@@ -7,59 +7,69 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <style>
         body {
-            background: linear-gradient(to bottom, #0033cc, #0099ff, #66ccff, #cce0ff, #ffffff);
-            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to top, #00aaff, #004d99);
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
             color: #333;
         }
         h1 {
-            font-size: 2.5em;
+            font-size: 2.2em;
+            color: #fff;
             margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            color: #00264d;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+            font-weight: 300;
         }
         #chart-container {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
             width: 80%;
-            max-width: 1000px;
-            margin: 0 auto;
-            animation: fadeIn 1.5s ease-in-out;
+            max-width: 800px;
+            text-align: center;
         }
         #piechart {
             width: 100%;
             height: 500px;
+            border: 5px solid #00aaff;
+            border-radius: 15px;
+            background: #f9f9f9;
+            animation: bounceIn 1.5s ease-in-out;
         }
-        @keyframes fadeIn {
-            from {
+        @keyframes bounceIn {
+            0% {
                 opacity: 0;
-                transform: scale(0.95);
+                transform: scale(0.8);
             }
-            to {
+            60% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            100% {
                 opacity: 1;
                 transform: scale(1);
             }
         }
         footer {
-            margin-top: 50px;
+            margin-top: 40px;
             font-size: 1em;
             text-align: center;
-            color: #003366;
+            color: #fff;
         }
         .footer-link {
-            color: #0066cc;
+            color: #ffeb3b;
             text-decoration: none;
             font-weight: bold;
+            transition: color 0.3s;
         }
         .footer-link:hover {
+            color: #ff9800;
             text-decoration: underline;
         }
     </style>
@@ -75,8 +85,8 @@
             var options = {
                 title: 'Distribution des Commits par Minute',
                 titleTextStyle: {
-                    color: '#003366',
-                    fontSize: 24,
+                    color: '#333',
+                    fontSize: 20,
                     bold: true
                 },
                 backgroundColor: 'transparent',
@@ -84,18 +94,18 @@
                 legend: {
                     position: 'bottom',
                     textStyle: {
-                        color: '#003366',
-                        fontSize: 14
+                        color: '#333',
+                        fontSize: 12
                     }
                 },
-                pieSliceBorderColor: '#333',
+                pieSliceBorderColor: '#fff',
                 slices: {
                     0: { offset: 0.1 },
                     1: { offset: 0.1 },
                     2: { offset: 0.1 }
                 },
                 pieHole: 0.4,
-                colors: ['#FF6347', '#FFA07A', '#FFD700', '#20B2AA', '#9370DB', '#00CED1', '#7FFF00', '#D2691E']
+                colors: ['#FF4500', '#FF6347', '#FFD700', '#20B2AA', '#9370DB', '#00CED1', '#7FFF00', '#D2691E']
             };
 
             var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -132,13 +142,13 @@
 </head>
 <body>
 
-    <h1>Analyse des Commits - Projet</h1>
+    <h1>Analyse des Commits</h1>
     <div id="chart-container">
         <div id="piechart"></div>
     </div>
 
     <footer>
-        Créé avec ♥ par <a class="footer-link" href="https://github.com/votreusername" target="_blank">Sarra BEJAOUI</a> | Données fournies par GitHub API
+        Créé avec ♥ par <a class="footer-link" href="https://github.com/votreusername" target="_blank">Sarra BEJAOUI/a> | Données fournies par GitHub API
     </footer>
 
 </body>
