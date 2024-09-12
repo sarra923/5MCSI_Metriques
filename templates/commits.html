@@ -3,8 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commits par Minute - Pie Chart</title>
+    <title>Analyse des Commits - Graphique en Secteurs</title>
+
+    <!-- Intégrer Google Charts -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <!-- Charger les polices Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <!-- Styles personnalisés pour un design moderne -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #f953c6, #b91d73);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: white;
+        }
+
+        h1 {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #piechart {
+            width: 80%;
+            max-width: 1000px;
+            height: 600px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .chart-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Styles pour rendre le bouton de rafraîchissement plus attrayant */
+        .refresh-btn {
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #ff6f61;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background-color: #ff8567;
+        }
+    </style>
+
+    <!-- Script pour charger et dessiner le graphique -->
     <script type="text/javascript">
         // Charger Google Charts
         google.charts.load("current", {packages:["corechart"]});
@@ -15,53 +83,71 @@
             var data = google.visualization.arrayToDataTable(commitMinutes);
 
             var options = {
-                title: 'Commits par Minute',
-                legend: { position: 'right' },  // Positionner la légende sur le côté droit
-                pieSliceText: 'label',
-                slices: { 
-                    // Ajouter un offset pour les secteurs avec des données significatives, si nécessaire
+                title: 'Répartition des Commits par Minute',
+                titleTextStyle: {
+                    color: '#ffffff',
+                    fontSize: 22,
+                    bold: true,
                 },
+                backgroundColor: 'transparent',
+                legend: { position: 'right', textStyle: { color: '#ffffff' } },
+                pieSliceText: 'percentage',
+                pieSliceBorderColor: '#ffffff',
+                slices: {
+                    0: { offset: 0.1 },
+                    1: { offset: 0.1 },
+                    2: { offset: 0.1 },
+                },
+                chartArea: {
+                    width: '90%',
+                    height: '80%'
+                }
             };
 
             var chart = new google.visualization.PieChart(document.getElementById('piechart'));
             chart.draw(data, options);
         }
 
-        // Fonction pour extraire les commits depuis l'API GitHub
+        // Fonction pour récupérer les commits depuis l'API GitHub
         function fetchCommits() {
             const url = 'https://api.github.com/repos/OpenRSI/5MCSI_Metriques/commits';
 
-            // Utiliser Fetch API pour envoyer la requête
             fetch(url)
                 .then(response => response.json())
                 .then(commits => {
-                    // Créer un tableau pour stocker les minutes des commits
                     let commitMinutes = [['Minute', 'Nombre de Commits']];
-                    let minuteCount = Array(60).fill(0);  // Tableau pour compter les commits par minute
+                    let minuteCount = Array(60).fill(0);
 
-                    // Extraire les minutes de chaque commit
                     commits.forEach(commit => {
                         const commitDate = new Date(commit.commit.author.date);
                         const minute = commitDate.getMinutes();
                         minuteCount[minute]++;
                     });
 
-                    // Convertir minuteCount en format utilisable pour Google Charts
                     for (let i = 0; i < minuteCount.length; i++) {
                         if (minuteCount[i] > 0) {
                             commitMinutes.push([i.toString() + ' min', minuteCount[i]]);
                         }
                     }
 
-                    // Dessiner le graphique avec les données extraites
                     drawChart(commitMinutes);
                 })
                 .catch(error => console.error('Erreur lors de la récupération des commits:', error));
         }
+
+        // Fonction pour rafraîchir le graphique
+        function refreshChart() {
+            fetchCommits();
+        }
     </script>
 </head>
 <body>
-    <h1>Commits par Minute - Pie Chart</h1>
-    <div id="piechart" style="width: 900px; height: 500px;"></div>
+    <h1>Analyse des Commits</h1>
+
+    <div class="chart-container">
+        <div id="piechart"></div>
+    </div>
+
+    <button class="refresh-btn" onclick="refreshChart()">Rafraîchir les données</button>
 </body>
 </html>
