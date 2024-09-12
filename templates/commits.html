@@ -1,56 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="fr">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commits par Minute</title>
+    <title>Commits par Minute - Pie Chart</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-      google.charts.load('current', {packages: ['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
+        // Charger Google Charts
+        google.charts.load("current", {packages:["corechart"]});
+        google.charts.setOnLoadCallback(fetchCommits);
 
-      function drawChart() {
-        // Les données des commits passées par Flask
-        var commitData = JSON.parse('{{ commits | tojson }}');
+        // Fonction pour dessiner le graphique
+        function drawChart(commitMinutes) {
+            var data = google.visualization.arrayToDataTable(commitMinutes);
 
-        // Créer le tableau de données
-        var data = new google.visualization.DataTable();
-        data.addColumn('number', 'Minute');
-        data.addColumn('number', 'Nombre de commits');
+            var options = {
+                title: 'Commits par Minute',
+                legend: { position: 'right' },  // Positionner la légende sur le côté droit
+                pieSliceText: 'label',
+                slices: { 
+                    // Ajouter un offset pour les secteurs avec des données significatives, si nécessaire
+                },
+            };
 
-        // Compter le nombre de commits par minute
-        var commitCount = {};
-        commitData.forEach(function(minute) {
-          if (commitCount[minute]) {
-            commitCount[minute]++;
-          } else {
-            commitCount[minute] = 1;
-          }
-        });
-
-        // Ajouter les données au tableau
-        for (var minute in commitCount) {
-          data.addRow([parseInt(minute), commitCount[minute]]);
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+            chart.draw(data, options);
         }
 
-        // Options du graphique
-        var options = {
-          title: 'Nombre de commits par minute',
-          hAxis: {title: 'Minute'},
-          vAxis: {title: 'Nombre de commits'},
-          legend: 'none'
-        };
+        // Fonction pour extraire les commits depuis l'API GitHub
+        function fetchCommits() {
+            const url = 'https://api.github.com/repos/OpenRSI/5MCSI_Metriques/commits';
 
-        // Dessiner le graphique
-        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
-      }
+            // Utiliser Fetch API pour envoyer la requête
+            fetch(url)
+                .then(response => response.json())
+                .then(commits => {
+                    // Créer un tableau pour stocker les minutes des commits
+                    let commitMinutes = [['Minute', 'Nombre de Commits']];
+                    let minuteCount = Array(60).fill(0);  // Tableau pour compter les commits par minute
+
+                    // Extraire les minutes de chaque commit
+                    commits.forEach(commit => {
+                        const commitDate = new Date(commit.commit.author.date);
+                        const minute = commitDate.getMinutes();
+                        minuteCount[minute]++;
+                    });
+
+                    // Convertir minuteCount en format utilisable pour Google Charts
+                    for (let i = 0; i < minuteCount.length; i++) {
+                        if (minuteCount[i] > 0) {
+                            commitMinutes.push([i.toString() + ' min', minuteCount[i]]);
+                        }
+                    }
+
+                    // Dessiner le graphique avec les données extraites
+                    drawChart(commitMinutes);
+                })
+                .catch(error => console.error('Erreur lors de la récupération des commits:', error));
+        }
     </script>
-  </head>
-  <body>
-    <div style="width: 900px; height: 500px; margin: 0 auto;">
-      <h2>Commits par Minute</h2>
-      <div id="chart_div"></div>
-    </div>
-  </body>
+</head>
+<body>
+    <h1>Commits par Minute - Pie Chart</h1>
+    <div id="piechart" style="width: 900px; height: 500px;"></div>
+</body>
 </html>
