@@ -3,77 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commits par Minute - Graphique en Secteurs</title>
-
-    <!-- Charger Google Charts -->
+    <title>Visualisation des Commits - Commit Tracker</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-    <!-- Intégrer Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
-    <!-- Styles personnalisés pour un design moderne et unique -->
     <style>
         body {
+            background-image: linear-gradient(to right, #6A82FB, #FC5C7D);
+            font-family: 'Helvetica Neue', sans-serif;
             margin: 0;
             padding: 0;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to right, #f953c6, #b91d73);
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             min-height: 100vh;
             color: white;
         }
-
         h1 {
-            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 15px 30px;
-            border-radius: 10px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            font-size: 2.5em;
+            letter-spacing: 0.1em;
+            margin-bottom: 50px;
+            text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.2);
         }
-
-        #piechart {
-            width: 80%;
-            max-width: 1000px;
-            height: 600px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+        #chart-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
             padding: 20px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         }
-
-        .chart-container {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        #piechart {
+            width: 900px;
+            height: 500px;
+            animation: fadeIn 2s ease-in-out;
         }
-
-        .refresh-btn {
-            margin-top: 30px;
-            padding: 10px 20px;
-            background-color: #ff6f61;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
-
-        .refresh-btn:hover {
-            background-color: #ff8567;
+        footer {
+            margin-top: 50px;
+            font-size: 1.2em;
+            text-align: center;
+            color: #f0f0f0;
+        }
+        .footer-link {
+            color: #FFD700;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .footer-link:hover {
+            text-decoration: underline;
         }
     </style>
-
     <script type="text/javascript">
         // Charger Google Charts
-        google.charts.load("current", {packages:["corechart"]});
+        google.charts.load('current', { packages: ['corechart'] });
         google.charts.setOnLoadCallback(fetchCommits);
 
         // Fonction pour dessiner le graphique
@@ -81,51 +72,51 @@
             var data = google.visualization.arrayToDataTable(commitMinutes);
 
             var options = {
-                title: 'Répartition des Commits par Minute',
+                title: 'Distribution des Commits par Minute',
                 titleTextStyle: {
-                    color: '#ffffff',
-                    fontSize: 22,
+                    color: '#FFFFFF',
+                    fontSize: 24,
                     bold: true,
+                    italic: false
                 },
                 backgroundColor: 'transparent',
-                legend: { position: 'right', textStyle: { color: '#ffffff' } },
                 pieSliceText: 'percentage',
-                pieSliceBorderColor: '#ffffff',
+                legend: {
+                    position: 'bottom',
+                    textStyle: {
+                        color: '#FFF',
+                        fontSize: 14
+                    }
+                },
+                pieSliceBorderColor: '#333',
                 slices: {
                     0: { offset: 0.1 },
                     1: { offset: 0.1 },
-                    2: { offset: 0.1 },
+                    2: { offset: 0.1 }
                 },
-                chartArea: {
-                    width: '90%',
-                    height: '80%'
-                }
+                pieHole: 0.4,
+                colors: ['#FF6347', '#FFA07A', '#FFD700', '#20B2AA', '#9370DB', '#00CED1', '#7FFF00', '#D2691E']
             };
 
             var chart = new google.visualization.PieChart(document.getElementById('piechart'));
             chart.draw(data, options);
         }
 
-        // Fonction pour récupérer les commits depuis l'API GitHub
+        // Fonction pour extraire les commits depuis l'API GitHub
         function fetchCommits() {
             const url = 'https://api.github.com/repos/OpenRSI/5MCSI_Metriques/commits';
 
             fetch(url)
                 .then(response => response.json())
                 .then(commits => {
-                    console.log('Commits récupérés:', commits);
-
                     let commitMinutes = [['Minute', 'Nombre de Commits']];
                     let minuteCount = Array(60).fill(0);
 
-                    // Extraire les minutes de chaque commit
                     commits.forEach(commit => {
                         const commitDate = new Date(commit.commit.author.date);
                         const minute = commitDate.getMinutes();
                         minuteCount[minute]++;
                     });
-
-                    console.log('Minutes des commits:', minuteCount);
 
                     for (let i = 0; i < minuteCount.length; i++) {
                         if (minuteCount[i] > 0) {
@@ -133,30 +124,22 @@
                         }
                     }
 
-                    console.log('Données pour Google Charts:', commitMinutes);
-
-                    if (commitMinutes.length > 1) {
-                        drawChart(commitMinutes);
-                    } else {
-                        console.warn('Aucune donnée à afficher pour le graphique.');
-                    }
+                    drawChart(commitMinutes);
                 })
-                .catch(error => console.error('Erreur lors de la récupération des commits:', error));
-        }
-
-        // Fonction pour rafraîchir le graphique
-        function refreshChart() {
-            fetchCommits();
+                .catch(error => console.error('Erreur lors de la récupération des commits :', error));
         }
     </script>
 </head>
 <body>
-    <h1>Analyse des Commits</h1>
 
-    <div class="chart-container">
+    <h1>Analyse des Commits - Projet</h1>
+    <div id="chart-container">
         <div id="piechart"></div>
     </div>
 
-    <button class="refresh-btn" onclick="refreshChart()">Rafraîchir les données</button>
+    <footer>
+        Créé avec ♥ par <a class="footer-link" href="https://github.com/votreusername" target="_blank">Votre Nom</a> | Données fournies par GitHub API
+    </footer>
+
 </body>
 </html>
