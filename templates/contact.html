@@ -5,63 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact</title>
     <style>
+        /* Style du corps avec un fond dégradé élégant */
         body {
             font-family: 'Arial', sans-serif;
-            background-image: url('https://www.example.com/your-background-image.jpg'); /* Remplace par une URL valide */
+            background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 55%, #fad0c4 100%);
             background-size: cover;
             background-position: center;
-            padding: 20px;
+            padding: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
+
+        /* Style de la boîte contenant le formulaire */
         .container {
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 30px;
-            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 15px;
             max-width: 600px;
-            margin: auto;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 1.5s ease-in-out;
+            width: 100%;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1.2s ease-in-out;
         }
+
+        /* Style du titre */
         h2 {
             color: #333;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: bold;
         }
+
+        /* Style des étiquettes de formulaire */
         label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: #333;
             font-weight: bold;
         }
+
+        /* Style des champs de texte */
         input[type="text"], textarea {
             width: 100%;
             padding: 12px;
             margin-bottom: 20px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            box-shadow: 0px 0px 8px 0px rgba(0, 128, 128, 0.4);
-            transition: box-shadow 0.3s ease-in-out;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            background-color: #f4f4f4;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0px 0px 10px rgba(255, 182, 193, 0.3);
         }
+
+        /* Effet scintillant sur focus */
         input[type="text"]:focus, textarea:focus {
-            box-shadow: 0px 0px 12px 0px rgba(0, 255, 255, 0.8);
+            border-color: #ff6f91;
+            box-shadow: 0px 0px 15px rgba(255, 105, 180, 0.6);
             outline: none;
         }
+
+        /* Style du bouton d'envoi avec des couleurs vibrantes */
         button {
-            background-color: #28a745;
+            background: linear-gradient(45deg, #ff6f91, #ff9671);
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 4px;
+            padding: 15px 25px;
+            border-radius: 50px;
             cursor: pointer;
-            width: 100%;
             font-size: 16px;
             font-weight: bold;
-            box-shadow: 0px 4px 8px rgba(0, 128, 128, 0.4);
-            transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+            text-transform: uppercase;
+            box-shadow: 0px 10px 20px rgba(255, 105, 180, 0.4);
+            transition: all 0.3s ease-in-out;
+            width: 100%;
         }
+
+        /* Effet de hover sur le bouton */
         button:hover {
-            background-color: #218838;
+            background: linear-gradient(45deg, #ff9671, #ffd365);
+            box-shadow: 0px 15px 30px rgba(255, 182, 193, 0.6);
             transform: scale(1.05);
         }
+
+        /* Animation de fade-in */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -71,6 +98,18 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        /* Animation scintillante des bordures */
+        @keyframes glow {
+            0% { border-color: #ff6f91; }
+            50% { border-color: #ffd365; }
+            100% { border-color: #ff6f91; }
+        }
+
+        /* Style des champs lors du focus avec l'animation scintillante */
+        input[type="text"]:focus, textarea:focus {
+            animation: glow 1.5s infinite ease-in-out;
         }
     </style>
 </head>
