@@ -34,38 +34,10 @@ def mongraphique():
 def histogramme():
     return render_template("histogramme.html")
 
-# Fonction pour extraire les minutes à partir d'une date au format ISO
-@app.route('/extract-minutes/<date_string>')
-def extract_minutes(date_string):
-    date_object = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%SZ')
-    minutes = date_object.minute
-    return jsonify({'minutes': minutes})
 
-# Nouvelle route pour afficher les commits sous forme de graphique
-@app.route('/commits/')
-def get_commits():
-    # URL de l'API GitHub pour récupérer les commits
-    url = 'https://api.github.com/repos/OpenRSI/5MCSI_Metriques/commits'
-    
-    # Récupérer les données de l'API
-    response = urlopen(url)
-    raw_data = response.read()
-    json_data = json.loads(raw_data.decode('utf-8'))
-    
-    # Extraire les minutes des dates des commits
-    commit_times = []
-    for commit in json_data:
-        commit_date = commit['commit']['author']['date']
-        minutes = extract_minutes_from_date(commit_date)
-        commit_times.append(minutes)
-
-# Envoyer les minutes des commits à la page HTML
-    return render_template("commits.html", commits=commit_times)
-
-# Fonction pour extraire les minutes d'un timestamp donné
-def extract_minutes_from_date(date_string):
-    date_object = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%SZ')
-    return date_object.minute
+@app.route("/commits/")
+def commits():
+    return render_template("commits.html")
   
 if __name__ == "__main__":
   app.run(debug=True)
